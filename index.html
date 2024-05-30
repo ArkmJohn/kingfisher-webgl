@@ -6,6 +6,32 @@
     <title>Unity WebGL Player | Cryptopia Avatar Editor</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      canvas {
+        display: block;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+
+      #unity-fullscreen-button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+      }
+    </style>
+    <script>
+      // Define the global JavaScript function
+      window.handleGameEvent = function(data) {
+          console.log("Event:", data);
+          // Add your custom event handling logic here
+      };
+      
+      function onUnityLoaded(unityInstance) {
+          // This is called when Unity is fully loaded
+          window.unityInstance = unityInstance;
+      }
+  </script>
   </head>
   <body style="background-image:url('Webgl_bg.png');">
     <div id="unity-container" class="unity-desktop">
