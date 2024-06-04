@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Unity WebGL Player | Cryptopia Avatar Editor</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+    <link rel="stylesheet" href="TemplateData/style.css" />
     <style>
       canvas {
         display: block;
@@ -20,33 +20,26 @@
         z-index: 1;
       }
     </style>
-    <script>
-      // Define the global JavaScript function
-      window.handleGameEvent = function(data) {
-          console.log("Event:", data);
-          // Add your custom event handling logic here
-      };
-      
-      function onUnityLoaded(unityInstance) {
-          // This is called when Unity is fully loaded
-          window.unityInstance = unityInstance;
-      }
-  </script>
   </head>
-  <body style="background-image:url('Webgl_bg.png');">
+  <body style="background-image: url('Webgl_bg.png')">
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=1366 height=768 tabindex="-1"></canvas>
-      <div id="unity-fullscreen-button"></div>
+      <canvas
+        id="unity-canvas"
+        width="1366"
+        height="768"
+        tabindex="-1"
+      ></canvas>
+      <div id="unity-fullscreen-button" class="unity-fullscreen-button"></div>
+
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
-      <div id="unity-warning"> </div>
+      <div id="unity-warning"></div>
     </div>
     <script>
-
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
@@ -62,15 +55,18 @@
       // user.
       function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+          warningBanner.style.display = warningBanner.children.length
+            ? "block"
+            : "none";
         }
-        var div = document.createElement('div');
+        var div = document.createElement("div");
         div.innerHTML = msg;
         warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        if (type == "error") div.style = "background: red; padding: 10px;";
         else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
+          if (type == "warning")
+            div.style = "background: yellow; padding: 10px;";
+          setTimeout(function () {
             warningBanner.removeChild(div);
             updateBannerVisibility();
           }, 5000);
@@ -101,18 +97,17 @@
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        var meta = document.createElement("meta");
+        meta.name = "viewport";
+        meta.content =
+          "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+        document.getElementsByTagName("head")[0].appendChild(meta);
         container.className = "unity-mobile";
         canvas.className = "unity-mobile";
 
         // To lower canvas resolution on mobile devices to gain some
         // performance, uncomment the following line:
         // config.devicePixelRatio = 1;
-
-
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
@@ -127,18 +122,44 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                loadingBar.style.display = "none";
-                fullscreenButton.onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-              }).catch((message) => {
-                alert(message);
-              });
+        })
+          .then((unityInstance) => {
+            loadingBar.style.display = "none";
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
             };
+          })
+          .catch((message) => {
+            alert(message);
+          });
+      };
 
       document.body.appendChild(script);
+    </script>
 
+    <script>
+      // Define the global JavaScript function
+      window.handleUnityEvent = function (message) {
+        console.log("Event:", message);
+
+        // Send the message to the parent window
+        window.parent.postMessage(message, "*");
+      };
+
+      function onUnityLoaded(unityInstance) {
+        // This is called when Unity is fully loaded
+        window.unityInstance = unityInstance;
+      }
+
+      // if url contains param iframe=1 add class unity-fullscreen-button to #unity-fullscreen-button
+      window.onload = function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("iframe")) {
+          document
+            .getElementById("unity-fullscreen-button")
+            .classList.add("unity-fullscreen-button--iframe");
+        }
+      };
     </script>
   </body>
 </html>
